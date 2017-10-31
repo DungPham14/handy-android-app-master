@@ -1,0 +1,113 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.renosys.handy.UpdateIPActivity">
+
+    <!-- Login progress -->
+    <ProgressBar
+        android:id="@+id/login_progress"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/update_ip_form"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center|top">
+        <TextView
+            android:id="@+id/text_welcome"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/string_change_ip_address"
+            android:textSize="40dp"
+            android:textAlignment="center"
+            android:textColor="@color/colorText"
+            />
+        <TextView
+            android:id="@+id/text_current_ip"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/string_current_ip"
+            android:textSize="14dp"
+            android:textAlignment="center"
+            android:textColor="@color/colorText"
+            android:paddingTop="30px"
+            />
+
+        <EditText
+            android:id="@+id/txt_current_ip"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:digits="0123456789.htps://"
+            android:background="@drawable/shape"
+            android:textCursorDrawable="@null"
+            android:padding="10dp"
+            android:paddingTop="20dp"
+            android:singleLine="true"/>
+
+        <TextView
+            android:id="@+id/text_new_ip"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/string_new_ip"
+            android:textSize="14dp"
+            android:textAlignment="center"
+            android:textColor="@color/colorText"
+            android:paddingTop="30px"
+            />
+
+        <EditText
+            android:id="@+id/txt_new_ip"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:digits="0123456789.htps://"
+            android:background="@drawable/shape"
+            android:textCursorDrawable="@null"
+            android:padding="10dp"
+            android:paddingTop="20dp"
+            android:cursorVisible="true"
+            android:singleLine="true"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/InnerRelativeLayout"
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:orientation="horizontal"
+        android:weightSum="1.0" >
+        <Button
+            android:id="@+id/back_button"
+            style="?android:textAppearanceSmall"
+            android:layout_height="wrap_content"
+            android:layout_weight=".5"
+            android:layout_width="0dip"
+            android:text="@string/action_back"
+            android:textStyle="normal"
+            android:background="@drawable/back_button"
+            android:textColor="@color/white"/>
+        <Button
+            android:id="@+id/update_button"
+            style="?android:textAppearanceSmall"
+            android:layout_height="wrap_content"
+            android:layout_weight=".5"
+            android:layout_width="0dip"
+            android:text="@string/action_update"
+            android:textStyle="normal"
+            android:background="@drawable/button"
+            android:textColor="@color/white"/>
+
+    </LinearLayout>
+</LinearLayout>

@@ -1,0 +1,17 @@
+<html>
+<head>
+    <script language="javascript">
+            function saveId(_id)
+            {
+                localStorage.setItem("id", _id);
+                Android.performClick(_id);
+            }
+        </script>
+</head>
+
+<body>
+<button onClick="saveId('1');">1</button>
+<button onClick="saveId('2');">2</button>
+</body>
+
+</html>

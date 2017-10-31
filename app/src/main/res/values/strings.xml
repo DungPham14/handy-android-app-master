@@ -1,0 +1,35 @@
+<resources>
+    <string name="app_name">Handy</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_ip_address">IP Address</string>
+    <string name="action_next">Next</string>
+    <string name="action_update">Update</string>
+
+    <string name="action_back">Back</string>
+    <string name="error_invalid_ip">This IP address is invalid</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="string_welcome">Welcome</string>
+    <string name="string_input_ip_address">Please enter your IP address</string>
+    <string name="string_change_ip_address">Change IP Address</string>
+    <string name="string_current_ip">Current IP address</string>
+    <string name="string_new_ip">New IP address</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing IP
+        address."
+    </string>
+    <string name="title_activity_ip_update_ip">Update IP</string>
+
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password (optional)</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="error_incorrect_ip_address">Current IP address is incorrect</string>
+
+
+    <string name="msg_ip_added">Your IP has been added</string>
+    <string name="msg_ip_updated">Your IP has been updated</string>
+
+
+    <string name="title_activity_update_ipaddress">UpdateIPAddress</string>
+    <string name="my_ip_address_string">MyIpAddress</string>
+</resources>
