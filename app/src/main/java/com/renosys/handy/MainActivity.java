@@ -1,22 +1,16 @@
 package com.renosys.handy;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.os.AsyncTask;
-import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.webkit.JavascriptInterface;
 import android.webkit.JsResult;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
@@ -26,7 +20,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 import android.webkit.WebViewClient;
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.view.Window;
 import android.view.WindowManager;
 import static android.Manifest.permission.READ_CONTACTS;
@@ -52,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-// Hide the status bar.
+        // Hide the status bar.
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -61,6 +54,15 @@ public class MainActivity extends AppCompatActivity {
         mIPView = (EditText) findViewById(R.id.txt_ip);
 
         mWebView = (WebView) findViewById(R.id.webView);
+//        mWebView.clearCache(true);
+//        mWebView.clearHistory();
+//        mWebView.getSettings().setJavaScriptEnabled(true);
+//        mWebView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
+//        mWebView.setWebChromeClient(new WebChromeClient());
+//        mWebView.getSettings().setAppCacheEnabled(true);
+//        mWebView.getSettings().setDomStorageEnabled(true);
+//        mWebView.addJavascriptInterface(new WebAppInterface(this), "Android");
+//        mWebView.loadUrl("file:///android_asset/home");
         SharedPreferences prefs = getSharedPreferences(getString(R.string.my_ip_address_string), MODE_PRIVATE);
         String ipAddress = prefs.getString(getString(R.string.my_ip_address_string), null);
         if (ipAddress != null){
@@ -82,9 +84,60 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        SharedPreferences prefs = getSharedPreferences(getString(R.string.my_ip_address_string), MODE_PRIVATE);
+//        String ipAddress = prefs.getString(getString(R.string.my_ip_address_string), null);
+//        if (ipAddress != null){
+//            mIPView.setText(ipAddress);
+//            mWebView.setVisibility(View.VISIBLE);
+//            loadingWebview(ipAddress);
+//
+//
+//        }else {
+//
+//            mWebView.setVisibility(View.GONE);
+//        }
+//
+//        Button mNewIPButton = (Button) findViewById(R.id.email_next_button);
+//        mNewIPButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                attemptSetIP();
+//            }
+//        });
+//    }
+
+    public class WebAppInterface {
+
+        Context mContext;
+
+        /**
+         * Instantiate the interface and set the context
+         */
+        WebAppInterface(Context c) {
+            mContext = c;
+        }
+
+        /**
+         * event onclick button Host Registration in webview
+         */
+        @JavascriptInterface
+        public void performClick(String _id) {
+
+
+//            Intent i = new Intent(MainActivity.this, UpdateIPActivity.class);
+//            startActivityForResult(i, );
+            startActivity(new Intent(MainActivity.this, UpdateIPActivity.class));
+        }
+    }
     @Override
     public void onBackPressed() {
+        super.onBackPressed();
     }
+
 
     private  void loadingWebview(String ipAddress){
 //        final ProgressDialog dialog = ProgressDialog.show(MainActivity.this, "", "", true);
@@ -95,6 +148,7 @@ public class MainActivity extends AppCompatActivity {
         mWebView.setWebChromeClient(new WebChromeClient());
         mWebView.getSettings().setAppCacheEnabled(true);
         mWebView.getSettings().setDomStorageEnabled(true);
+        mWebView.addJavascriptInterface(new WebAppInterface(this), "Android");
         final Activity activity = this;
 
         mWebView.setWebChromeClient(new WebChromeClient() {
@@ -123,24 +177,14 @@ public class MainActivity extends AppCompatActivity {
                 editor.remove(getString(R.string.my_ip_address_string));
                 editor.apply();
                 mWebView.setVisibility(View.GONE);
-            }
-
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                if (url.equals("")){
-                    Intent intentMain = new Intent(MainActivity.this , UpdateIPActivity.class);
-                    MainActivity.this.startActivity(intentMain);
-                    return false;
-                }
-                return super.shouldOverrideUrlLoading(view, url);
 
             }
 
+//
 
-
-            public void onPageFinished(WebView view, String url) {
-//                dialog.dismiss();
-            }
+//            public void onPageFinished(WebView view, String url) {
+////                dialog.dismiss();
+//            }
 
     });
 
@@ -178,15 +222,15 @@ public class MainActivity extends AppCompatActivity {
 //
             mWebView.setVisibility(View.VISIBLE);
 
-            loadingWebview(ipAddress);
+//            loadingWebview(ipAddress);
         }
     }
 
-    private boolean isIP(String input) {
+    private boolean isIP( String input ) {
 
-        if (input.contains(".") && input.length()>1) {
+        if ( input.contains(".") && input.length() > 1 ) {
             String ip = input.replace(".", "").trim().replace("https://","").trim().replace("http://","").trim().replace(":","").trim();
-            Log.v("MyActivity",ip);
+            Log.v( "MyActivity", ip );
             return TextUtils.isDigitsOnly( ip);
         }
         else {
