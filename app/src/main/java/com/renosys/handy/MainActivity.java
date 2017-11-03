@@ -1,12 +1,20 @@
 package com.renosys.handy;
 
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.BitmapDrawable;
+import android.media.RingtoneManager;
+import android.os.CountDownTimer;
+import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.NotificationCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -22,6 +30,10 @@ import android.webkit.WebViewClient;
 import android.app.Activity;
 import android.view.Window;
 import android.view.WindowManager;
+import android.content.Context;
+import java.util.Calendar;
+import java.util.TimeZone;
+
 import static android.Manifest.permission.READ_CONTACTS;
 
 
@@ -41,9 +53,16 @@ public class MainActivity extends AppCompatActivity {
     // UI references.
     private EditText mIPView;
     private WebView mWebView;
+
+    // diplay notification at 9.59 AM
+    private static long TIME_REPEAT = ( 9*60*60 + 59*60 ) * 1000;
+//    private AlarmManager alarmMgr;
+//    private PendingIntent alarmIntent;
+//    private Context context;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
 
         // Hide the status bar.
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -54,20 +73,13 @@ public class MainActivity extends AppCompatActivity {
         mIPView = (EditText) findViewById(R.id.txt_ip);
 
         mWebView = (WebView) findViewById(R.id.webView);
-//        mWebView.clearCache(true);
-//        mWebView.clearHistory();
-//        mWebView.getSettings().setJavaScriptEnabled(true);
-//        mWebView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
-//        mWebView.setWebChromeClient(new WebChromeClient());
-//        mWebView.getSettings().setAppCacheEnabled(true);
-//        mWebView.getSettings().setDomStorageEnabled(true);
-//        mWebView.addJavascriptInterface(new WebAppInterface(this), "Android");
-//        mWebView.loadUrl("file:///android_asset/home");
+//
         SharedPreferences prefs = getSharedPreferences(getString(R.string.my_ip_address_string), MODE_PRIVATE);
         String ipAddress = prefs.getString(getString(R.string.my_ip_address_string), null);
         if (ipAddress != null){
             mIPView.setText(ipAddress);
             mWebView.setVisibility(View.VISIBLE);
+            schedulerNotification();
             loadingWebview(ipAddress);
 
 
@@ -83,10 +95,12 @@ public class MainActivity extends AppCompatActivity {
                 attemptSetIP();
             }
         });
+
+
     }
 
 //    @Override
-//    protected void onResume() {
+//    protected void onResume() {TIME_REPEAT
 //        super.onResume();
 //        SharedPreferences prefs = getSharedPreferences(getString(R.string.my_ip_address_string), MODE_PRIVATE);
 //        String ipAddress = prefs.getString(getString(R.string.my_ip_address_string), null);
@@ -109,6 +123,41 @@ public class MainActivity extends AppCompatActivity {
 //            }
 //        });
 //    }
+    /*
+    *
+    * scheduler notification
+    *
+    * */
+    private void schedulerNotification (){
+        AlarmManager alarmMgr;
+        PendingIntent alarmIntent;
+//        Context context;
+        alarmMgr = (AlarmManager) getSystemService(ALARM_SERVICE);
+        Intent notificationIntent = new Intent( "android.media.action.DISPLAY_NOTIFICATION" );
+        notificationIntent.addCategory("android.intent.category.DEFAULT");
+        alarmIntent = PendingIntent.getBroadcast(this, 0, notificationIntent, 0);
+//        alarmIntent = PendingIntent.getBroadcast(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        // Set the alarm to start at 10.00 AM
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeZone( TimeZone.getTimeZone( "GMT+7:00" ) );
+        calendar.setTimeInMillis( System.currentTimeMillis() );
+//
+        calendar.set(Calendar.HOUR_OF_DAY, 9);
+        calendar.set(Calendar.MINUTE, 59);
+        calendar.set(Calendar.SECOND, 00);
+        long startUpTime = calendar.getTimeInMillis();
+        if (System.currentTimeMillis() > startUpTime) {
+            startUpTime = startUpTime + 24*60*60*1000;
+        }
+        // setRepeating() lets you specify a precise custom interval--in this case,
+        // 1 day
+//        alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+//                AlarmManager.INTERVAL_DAY, alarmIntent);
+        alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, /*calendar.getTimeInMillis()*/startUpTime,
+                AlarmManager.INTERVAL_DAY, alarmIntent);
+//        alarmMgr.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alarmIntent);
+    }
 
     public class WebAppInterface {
 
@@ -137,6 +186,7 @@ public class MainActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
     }
+
 
 
     private  void loadingWebview(String ipAddress){
@@ -237,6 +287,9 @@ public class MainActivity extends AppCompatActivity {
             return false;
         }
     }
+
+
+
 
 }
 
