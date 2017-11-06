@@ -27,10 +27,19 @@
         <activity android:name=".UpdateIPActivity"></activity>
 
         <activity android:name=".NotificationActivity"></activity>
+        <activity android:name=".DialogActivity" />
 
         <receiver android:name="com.renosys.handy.Tasks" >
             <intent-filter>
                 <action android:name="android.media.action.DISPLAY_NOTIFICATION" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+
+        </receiver>
+
+        <receiver android:name="com.renosys.handy.Dialog" >
+            <intent-filter>
+                <action android:name="android.media.action.DISPLAY_DIALOG" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>

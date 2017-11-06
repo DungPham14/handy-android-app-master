@@ -17,7 +17,7 @@ public class Tasks extends BroadcastReceiver {
 
 //    Context c;
     @Override
-    public void onReceive(final Context context, Intent intent) {
+    public void onReceive( final Context context, Intent intent) {
 
         Intent notificationIntent = new Intent(context, NotificationActivity.class );
 

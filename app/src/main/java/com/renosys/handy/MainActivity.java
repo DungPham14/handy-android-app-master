@@ -35,6 +35,7 @@ import java.util.Calendar;
 import java.util.TimeZone;
 
 import static android.Manifest.permission.READ_CONTACTS;
+import static com.renosys.handy.R.id.info;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -54,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText mIPView;
     private WebView mWebView;
 
-    // diplay notification at 9.59 AM
+    // display notification at 9.59 AM
     private static long TIME_REPEAT = ( 9*60*60 + 59*60 ) * 1000;
 //    private AlarmManager alarmMgr;
 //    private PendingIntent alarmIntent;
@@ -79,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
         if (ipAddress != null){
             mIPView.setText(ipAddress);
             mWebView.setVisibility(View.VISIBLE);
-            schedulerNotification();
+
             loadingWebview(ipAddress);
 
 
@@ -95,9 +96,12 @@ public class MainActivity extends AppCompatActivity {
                 attemptSetIP();
             }
         });
-
+        schedulerNotification();
+        schedulerDialog();
 
     }
+//    @Override
+
 
 //    @Override
 //    protected void onResume() {TIME_REPEAT
@@ -138,25 +142,57 @@ public class MainActivity extends AppCompatActivity {
         alarmIntent = PendingIntent.getBroadcast(this, 0, notificationIntent, 0);
 //        alarmIntent = PendingIntent.getBroadcast(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        // Set the alarm to start at 10.00 AM
+        // Set alarm to start at 10.00 AM
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeZone( TimeZone.getTimeZone( "GMT+7:00" ) );
         calendar.setTimeInMillis( System.currentTimeMillis() );
 //
-        calendar.set(Calendar.HOUR_OF_DAY, 9);
-        calendar.set(Calendar.MINUTE, 59);
-        calendar.set(Calendar.SECOND, 00);
+        calendar.set( Calendar.HOUR_OF_DAY, 9 );
+        calendar.set( Calendar.MINUTE, 59 );
+        calendar.set( Calendar.SECOND, 00 );
         long startUpTime = calendar.getTimeInMillis();
         if (System.currentTimeMillis() > startUpTime) {
             startUpTime = startUpTime + 24*60*60*1000;
         }
+
         // setRepeating() lets you specify a precise custom interval--in this case,
         // 1 day
-//        alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
-//                AlarmManager.INTERVAL_DAY, alarmIntent);
-        alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, /*calendar.getTimeInMillis()*/startUpTime,
+
+        alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, /*calendar.getTimeInMillis()*/ startUpTime,
                 AlarmManager.INTERVAL_DAY, alarmIntent);
-//        alarmMgr.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alarmIntent);
+
+    }
+
+    private void schedulerDialog(){
+        AlarmManager alarmMgr;
+        PendingIntent alarmIntent;
+//        Context context;
+        alarmMgr = (AlarmManager) getSystemService(ALARM_SERVICE);
+        Intent notificationIntent = new Intent( "android.media.action.DISPLAY_DIALOG" );
+        notificationIntent.addCategory("android.intent.category.DEFAULT");
+        alarmIntent = PendingIntent.getBroadcast(this, 0, notificationIntent, 0);
+//        alarmIntent = PendingIntent.getBroadcast(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        // Set alarm to start at 10.00 AM
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeZone( TimeZone.getTimeZone( "GMT+7:00" ) );
+        calendar.setTimeInMillis( System.currentTimeMillis() );
+//
+//        calendar.set( Calendar.HOUR_OF_DAY, 9 );
+//        calendar.set( Calendar.MINUTE, 59 );
+        calendar.set( Calendar.SECOND, 3 );
+        long startUpTime = calendar.getTimeInMillis();
+        if (System.currentTimeMillis() > startUpTime) {
+            startUpTime = startUpTime + 24*60*60*1000;
+        }
+
+        // setRepeating() lets you specify a precise custom interval--in this case,
+        // 1 day
+
+
+        alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, /*calendar.getTimeInMillis()*/ startUpTime,
+                AlarmManager.INTERVAL_DAY, alarmIntent);
+
     }
 
     public class WebAppInterface {
@@ -195,10 +231,10 @@ public class MainActivity extends AppCompatActivity {
         mWebView.clearHistory();
         mWebView.getSettings().setJavaScriptEnabled(true);
         mWebView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
-        mWebView.setWebChromeClient(new WebChromeClient());
+        mWebView.setWebChromeClient( new WebChromeClient() );
         mWebView.getSettings().setAppCacheEnabled(true);
         mWebView.getSettings().setDomStorageEnabled(true);
-        mWebView.addJavascriptInterface(new WebAppInterface(this), "Android");
+        mWebView.addJavascriptInterface( new WebAppInterface(this), "Android" );
         final Activity activity = this;
 
         mWebView.setWebChromeClient(new WebChromeClient() {

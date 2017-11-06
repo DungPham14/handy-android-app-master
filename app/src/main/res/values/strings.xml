@@ -32,6 +32,6 @@
 
     <string name="title_activity_update_ipaddress">UpdateIPAddress</string>
     <string name="my_ip_address_string">MyIpAddress</string>
-    <string name="content">the application will reload after 1 minutes </string>
+    <string name="content"> App will reload in 1 minute </string>
     <string name="title">HANDY</string>
 </resources>
