@@ -19,42 +19,10 @@ import android.support.v4.app.TaskStackBuilder;
 public class Dialog extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-        Intent dialog = new Intent(context, DialogActivity.class );
+        Intent dialog = new Intent(context, MainActivity.class );
+        dialog.addFlags( Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_SINGLE_TOP );
+        context.startActivity( dialog );
 
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
-        stackBuilder.addParentStack( DialogActivity.class );
-        stackBuilder.addNextIntent(dialog);
-
-        PendingIntent pendingIntent = stackBuilder
-                .getPendingIntent( 0, PendingIntent.FLAG_UPDATE_CURRENT );
-
-        final AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setPositiveButton("ok", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-
-            }
-        });
-        final AlertDialog alertDialog = builder.create();
-        alertDialog.setTitle("HANDY");
-        alertDialog.setMessage("00:10");
-//        alertDialog.set
-        alertDialog.show();   //
-
-        new CountDownTimer(10000, 1000) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-                alertDialog.setCanceledOnTouchOutside(false);
-
-                alertDialog.setMessage(" App will reload in 1 minute " + " 00: " + (millisUntilFinished / 1000));
-
-            }
-
-            @Override
-            public void onFinish() {
-                alertDialog.cancel();
-
-            }
-        }.start();
+//
     }
 }

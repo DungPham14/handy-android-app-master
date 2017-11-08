@@ -6,8 +6,13 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.media.RingtoneManager;
+import android.net.Uri;
+import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
+
+import static android.content.Context.VIBRATOR_SERVICE;
 
 /**
  * Created by cpu0131 on 03/11/2017.
@@ -15,11 +20,10 @@ import android.support.v4.app.TaskStackBuilder;
 
 public class Tasks extends BroadcastReceiver {
 
-//    Context c;
     @Override
     public void onReceive( final Context context, Intent intent) {
 
-        Intent notificationIntent = new Intent(context, NotificationActivity.class );
+        Intent notificationIntent = new Intent(context, getClass() );
 
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
         stackBuilder.addParentStack( NotificationActivity.class );
@@ -36,6 +40,10 @@ public class Tasks extends BroadcastReceiver {
                 .setTicker( context.getString( R.string.title ) )
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentIntent(pendingIntent).build();
+
+        //Vibrate for 1000 milliseconds (1s)
+        Vibrator vibrator = (Vibrator) context.getSystemService(VIBRATOR_SERVICE);
+        vibrator.vibrate(1000);
 
         NotificationManager notificationManager = (NotificationManager)
                 context.getSystemService(Context.NOTIFICATION_SERVICE);

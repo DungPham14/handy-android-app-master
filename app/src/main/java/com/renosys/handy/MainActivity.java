@@ -12,6 +12,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.media.RingtoneManager;
 import android.os.CountDownTimer;
 import android.os.SystemClock;
+import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.app.NotificationCompat;
@@ -36,6 +37,7 @@ import java.util.TimeZone;
 
 import static android.Manifest.permission.READ_CONTACTS;
 import static com.renosys.handy.R.id.info;
+import static java.util.TimeZone.getDefault;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -56,8 +58,9 @@ public class MainActivity extends AppCompatActivity {
     private WebView mWebView;
 
     // display notification at 9.59 AM
-    private static long TIME_REPEAT = ( 9*60*60 + 59*60 ) * 1000;
-//    private AlarmManager alarmMgr;
+    private static long TIME_REPEAT = (9 * 60 * 60 + 59 * 60) * 1000;
+
+    //    private AlarmManager alarmMgr;
 //    private PendingIntent alarmIntent;
 //    private Context context;
     @Override
@@ -77,17 +80,19 @@ public class MainActivity extends AppCompatActivity {
 //
         SharedPreferences prefs = getSharedPreferences(getString(R.string.my_ip_address_string), MODE_PRIVATE);
         String ipAddress = prefs.getString(getString(R.string.my_ip_address_string), null);
-        if (ipAddress != null){
+        if (ipAddress != null) {
             mIPView.setText(ipAddress);
             mWebView.setVisibility(View.VISIBLE);
 
             loadingWebview(ipAddress);
 
 
-        }else {
+        } else {
 
             mWebView.setVisibility(View.GONE);
         }
+//            Intent i = new Intent(MainActivity.this, UpdateIPActivity.class);
+//            startActivityForResult(i, );
 
         Button mNewIPButton = (Button) findViewById(R.id.email_next_button);
         mNewIPButton.setOnClickListener(new View.OnClickListener() {
@@ -97,103 +102,89 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         schedulerNotification();
-        schedulerDialog();
+        schedulerReloadapp();
 
     }
-//    @Override
 
+    /*
+    *
+    * scheduler Reloadapp
+    * */
+    private void schedulerReloadapp() {
 
-//    @Override
-//    protected void onResume() {TIME_REPEAT
-//        super.onResume();
-//        SharedPreferences prefs = getSharedPreferences(getString(R.string.my_ip_address_string), MODE_PRIVATE);
-//        String ipAddress = prefs.getString(getString(R.string.my_ip_address_string), null);
-//        if (ipAddress != null){
-//            mIPView.setText(ipAddress);
-//            mWebView.setVisibility(View.VISIBLE);
-//            loadingWebview(ipAddress);
+        AlarmManager alarmMgr;
+        PendingIntent alarmIntent;
+
+        alarmMgr = (AlarmManager) getSystemService(ALARM_SERVICE);
+
+        Intent notificationIntent = new Intent(this, Dialog.class);
+//        notificationIntent.addCategory("android.intent.category.DEFAULT");
+        alarmIntent = PendingIntent.getBroadcast(this, 0, notificationIntent, 0);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeZone(getDefault());
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.SECOND, 5);
+
+        long startUpTime = calendar.getTimeInMillis();
+//        long currUpTime = ;
+        if (System.currentTimeMillis() > startUpTime) {
+            startUpTime = startUpTime + 24 * 60 * 60 * 1000;
+        }
+//        new CountDownTimer(60000, 1000) {
 //
-//
-//        }else {
-//
-//            mWebView.setVisibility(View.GONE);
-//        }
-//
-//        Button mNewIPButton = (Button) findViewById(R.id.email_next_button);
-//        mNewIPButton.setOnClickListener(new View.OnClickListener() {
 //            @Override
-//            public void onClick(View view) {
-//                attemptSetIP();
+//            public void onTick(long millisUntilFinished) {
+////
 //            }
-//        });
-//    }
+//
+//            @Override
+//            public void onFinish() {
+//                finish();
+//                startActivity(getIntent());
+//
+//            }
+//        }.start();
+
+        alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis() /*startUpTime*/,
+                AlarmManager.INTERVAL_DAY, alarmIntent);
+    }
+
     /*
     *
     * scheduler notification
     *
     * */
-    private void schedulerNotification (){
+    private void schedulerNotification() {
         AlarmManager alarmMgr;
         PendingIntent alarmIntent;
-//        Context context;
+
         alarmMgr = (AlarmManager) getSystemService(ALARM_SERVICE);
-        Intent notificationIntent = new Intent( "android.media.action.DISPLAY_NOTIFICATION" );
+
+        Intent notificationIntent = new Intent("android.media.action.DISPLAY_NOTIFICATION");
         notificationIntent.addCategory("android.intent.category.DEFAULT");
         alarmIntent = PendingIntent.getBroadcast(this, 0, notificationIntent, 0);
-//        alarmIntent = PendingIntent.getBroadcast(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         // Set alarm to start at 10.00 AM
         Calendar calendar = Calendar.getInstance();
-        calendar.setTimeZone( TimeZone.getTimeZone( "GMT+7:00" ) );
-        calendar.setTimeInMillis( System.currentTimeMillis() );
+        calendar.setTimeZone(getDefault());
+        calendar.setTimeInMillis(System.currentTimeMillis());
 //
-        calendar.set( Calendar.HOUR_OF_DAY, 9 );
-        calendar.set( Calendar.MINUTE, 59 );
-        calendar.set( Calendar.SECOND, 00 );
+//        calendar.set(Calendar.HOUR_OF_DAY, 9);
+//        calendar.set(Calendar.MINUTE, 59);
+        calendar.set(Calendar.SECOND, 3);
         long startUpTime = calendar.getTimeInMillis();
         if (System.currentTimeMillis() > startUpTime) {
-            startUpTime = startUpTime + 24*60*60*1000;
+            startUpTime = startUpTime + 24 * 60 * 60 * 1000;
         }
 
         // setRepeating() lets you specify a precise custom interval--in this case,
         // 1 day
 
-        alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, /*calendar.getTimeInMillis()*/ startUpTime,
+        alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis() /*startUpTime*/,
                 AlarmManager.INTERVAL_DAY, alarmIntent);
 
     }
 
-    private void schedulerDialog(){
-        AlarmManager alarmMgr;
-        PendingIntent alarmIntent;
-//        Context context;
-        alarmMgr = (AlarmManager) getSystemService(ALARM_SERVICE);
-        Intent notificationIntent = new Intent( "android.media.action.DISPLAY_DIALOG" );
-        notificationIntent.addCategory("android.intent.category.DEFAULT");
-        alarmIntent = PendingIntent.getBroadcast(this, 0, notificationIntent, 0);
-//        alarmIntent = PendingIntent.getBroadcast(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        // Set alarm to start at 10.00 AM
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeZone( TimeZone.getTimeZone( "GMT+7:00" ) );
-        calendar.setTimeInMillis( System.currentTimeMillis() );
-//
-//        calendar.set( Calendar.HOUR_OF_DAY, 9 );
-//        calendar.set( Calendar.MINUTE, 59 );
-        calendar.set( Calendar.SECOND, 3 );
-        long startUpTime = calendar.getTimeInMillis();
-        if (System.currentTimeMillis() > startUpTime) {
-            startUpTime = startUpTime + 24*60*60*1000;
-        }
-
-        // setRepeating() lets you specify a precise custom interval--in this case,
-        // 1 day
-
-
-        alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, /*calendar.getTimeInMillis()*/ startUpTime,
-                AlarmManager.INTERVAL_DAY, alarmIntent);
-
-    }
 
     public class WebAppInterface {
 
@@ -211,30 +202,26 @@ public class MainActivity extends AppCompatActivity {
          */
         @JavascriptInterface
         public void performClick(String _id) {
-
-
-//            Intent i = new Intent(MainActivity.this, UpdateIPActivity.class);
-//            startActivityForResult(i, );
             startActivity(new Intent(MainActivity.this, UpdateIPActivity.class));
         }
     }
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();
     }
 
 
+    private void loadingWebview(String ipAddress) {
 
-    private  void loadingWebview(String ipAddress){
-//        final ProgressDialog dialog = ProgressDialog.show(MainActivity.this, "", "", true);
         mWebView.clearCache(true);
         mWebView.clearHistory();
         mWebView.getSettings().setJavaScriptEnabled(true);
         mWebView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
-        mWebView.setWebChromeClient( new WebChromeClient() );
+        mWebView.setWebChromeClient(new WebChromeClient());
         mWebView.getSettings().setAppCacheEnabled(true);
         mWebView.getSettings().setDomStorageEnabled(true);
-        mWebView.addJavascriptInterface( new WebAppInterface(this), "Android" );
+        mWebView.addJavascriptInterface(new WebAppInterface(this), "Android");
         final Activity activity = this;
 
         mWebView.setWebChromeClient(new WebChromeClient() {
@@ -254,7 +241,8 @@ public class MainActivity extends AppCompatActivity {
                 dialog.show();
                 result.confirm();
                 return true;
-            } });
+            }
+        });
 
         mWebView.setWebViewClient(new WebViewClient() {
             public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
@@ -272,10 +260,12 @@ public class MainActivity extends AppCompatActivity {
 ////                dialog.dismiss();
 //            }
 
-    });
+        });
 
         mWebView.loadUrl(ipAddress);
     }
+
+
     private void attemptSetIP() {
 
         // Reset errors.
@@ -312,20 +302,20 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private boolean isIP( String input ) {
 
-        if ( input.contains(".") && input.length() > 1 ) {
-            String ip = input.replace(".", "").trim().replace("https://","").trim().replace("http://","").trim().replace(":","").trim();
-            Log.v( "MyActivity", ip );
-            return TextUtils.isDigitsOnly( ip);
-        }
-        else {
+    /*
+    *
+    * check ip
+    * */
+    private boolean isIP(String input) {
+
+        if (input.contains(".") && input.length() > 1) {
+            String ip = input.replace(".", "").trim().replace("https://", "").trim().replace("http://", "").trim().replace(":", "").trim();
+            Log.v("MyActivity", ip);
+            return TextUtils.isDigitsOnly(ip);
+        } else {
             return false;
         }
     }
-
-
-
-
 }
 
