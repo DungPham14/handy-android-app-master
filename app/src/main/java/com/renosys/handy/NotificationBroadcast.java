@@ -18,7 +18,7 @@ import static android.content.Context.VIBRATOR_SERVICE;
  * Created by cpu0131 on 03/11/2017.
  */
 
-public class Tasks extends BroadcastReceiver {
+public class NotificationBroadcast extends BroadcastReceiver {
 
     @Override
     public void onReceive( final Context context, Intent intent) {
@@ -32,8 +32,9 @@ public class Tasks extends BroadcastReceiver {
         PendingIntent pendingIntent = stackBuilder
                 .getPendingIntent( 0, PendingIntent.FLAG_UPDATE_CURRENT );
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder( context );
 
+        // content notification
+        NotificationCompat.Builder builder = new NotificationCompat.Builder( context );
         Notification notification = builder
                 .setContentTitle( context.getString( R.string.title ) )
                 .setContentText( context.getString( R.string.content ) )

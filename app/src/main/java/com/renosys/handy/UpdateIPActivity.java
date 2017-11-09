@@ -14,18 +14,17 @@ import android.widget.Toast;
 
 public class UpdateIPActivity extends AppCompatActivity {
 
-    private EditText mCurrentIPView;
-    private EditText mNewIPView;
+    private EditText mCurrentIPView; // current ip
+    private EditText mNewIPView; // new ip
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update_ip);
 
         // Set up the login form.
         mCurrentIPView = (EditText) findViewById(R.id.txt_current_ip);
-
-
         SharedPreferences prefs = getSharedPreferences(getString(R.string.my_ip_address_string), MODE_PRIVATE);
         String ipAddress = prefs.getString(getString(R.string.my_ip_address_string), null);
         mCurrentIPView.setText(ipAddress);
@@ -41,7 +40,6 @@ public class UpdateIPActivity extends AppCompatActivity {
             }
         });
 
-
         // back button
         Button mBackButton = (Button) findViewById(R.id.back_button);
         mBackButton.setOnClickListener( new View.OnClickListener() {
@@ -54,6 +52,12 @@ public class UpdateIPActivity extends AppCompatActivity {
 
     }
 
+
+    /**
+     *
+     * check error on EditText and confirm new ip
+     *
+     * **/
     private void attemptUpdate() {
 
         // Reset errors.
@@ -96,31 +100,48 @@ public class UpdateIPActivity extends AppCompatActivity {
             // There was an error; don't attempt login and focus the first
             // form field with an error.
             focusView.requestFocus();
-        } else {
+        }
+        else {
 
             // save new ip by SharedPreferences
-            SharedPreferences.Editor editor = getSharedPreferences(getString(R.string.my_ip_address_string), MODE_PRIVATE).edit();
+            SharedPreferences.Editor editor = getSharedPreferences(
+                    getString(R.string.my_ip_address_string),
+                    MODE_PRIVATE
+            ).edit();
+
             editor.putString(getString(R.string.my_ip_address_string), newIP);
             editor.apply();
-            Toast.makeText(UpdateIPActivity.this, getString(R.string.msg_ip_updated),Toast.LENGTH_LONG).show();
+
+            Toast.makeText(
+                    UpdateIPActivity.this,
+                    getString(R.string.msg_ip_updated),
+                    Toast.LENGTH_LONG
+            ).show();
 
             // reload activity
             //onBackPressed();
-            startActivity(new Intent(UpdateIPActivity.this, MainActivity.class));
+            startActivity( new Intent( UpdateIPActivity.this, MainActivity.class ) );
         }
     }
 
 
     /**
      *
-     * function check for ip
+     *  check ip
+     *
      * **/
-    private boolean isIP(String input) {
+    private boolean isIP( String input ) {
 
         if ( input.contains(".") && input.length() > 1 ) {
-            String ip = input.replace(".", "").trim().replace("https://","").trim().replace("http://","").trim().replace(":","").trim();
+
+            String ip = input.replace(".", "" ).
+                    trim().replace( "https://","" ).
+                    trim().replace( "http://","" ).
+                    trim().replace( ":","" ).
+                    trim();
             Log.v( "MyActivity", ip );
-            return TextUtils.isDigitsOnly( ip);
+            return TextUtils.isDigitsOnly( ip );
+
         }
         else {
             return false;
