@@ -104,8 +104,8 @@ public class MainActivity extends AppCompatActivity {
         calendar.setTimeInMillis(System.currentTimeMillis());
 
         // set alarm reload app at 10am everyday
-        calendar.set(Calendar.HOUR_OF_DAY, 10);
-        calendar.set(Calendar.MINUTE, 00);
+        calendar.set(Calendar.HOUR_OF_DAY, 23);
+        calendar.set(Calendar.MINUTE, 38);
         calendar.set(Calendar.SECOND, 00);
 
         long startUpTime = calendar.getTimeInMillis();
@@ -145,8 +145,8 @@ public class MainActivity extends AppCompatActivity {
         calendar.setTimeInMillis(System.currentTimeMillis());
 
         // set alarm display notification at 9.59am everyday
-        calendar.set(Calendar.HOUR_OF_DAY, 9);
-        calendar.set(Calendar.MINUTE, 59);
+        calendar.set(Calendar.HOUR_OF_DAY, 23);
+        calendar.set(Calendar.MINUTE, 37);
         calendar.set(Calendar.SECOND, 00);
 
         long startUpTime = calendar.getTimeInMillis();
