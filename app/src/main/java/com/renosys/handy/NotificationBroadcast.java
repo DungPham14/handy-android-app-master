@@ -32,7 +32,6 @@ public class NotificationBroadcast extends BroadcastReceiver {
         PendingIntent pendingIntent = stackBuilder
                 .getPendingIntent( 0, PendingIntent.FLAG_UPDATE_CURRENT );
 
-
         // content notification
         NotificationCompat.Builder builder = new NotificationCompat.Builder( context );
         Notification notification = builder
