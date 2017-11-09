@@ -24,7 +24,6 @@
 
         <activity android:name=".UpdateIPActivity"></activity>
 
-
         <receiver android:name="com.renosys.handy.NotificationBroadcast" >
             <intent-filter>
                 <action android:name="android.media.action.DISPLAY_NOTIFICATION" />
