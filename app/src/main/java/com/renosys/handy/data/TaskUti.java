@@ -20,6 +20,8 @@ import java.util.Random;
 
 public class TaskUti {
 
+    private final static String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZ";
+    private final static String STT_UNFINISH = "unfinish";
     private final static String TAG = TaskUti.class.getSimpleName();
 
     private static TaskUti instance = null;
@@ -46,17 +48,7 @@ public class TaskUti {
     }
 
     public Task getObjectMock() {
-        String json = "{\"id\":1,\"table\":{\"id\":1,\"visitorId\":1,\"name\":\"TBL-001\",\"status\":\"" +
-                "assignable\"},\"priority\":\"high\",\"timestamp\":\"2017-09-01T12:00:00+09:00\",\"elapsed\":3," +
-                "\"details\":[{\"id\":1,\"orderDetail\":{\"id\":1,\"menuCode\":\"MENU-001\",\"quantity\":1," +
-                "\"options\":[{\"typeCode\":\"TYPE-001\",\"itemCode\":\"ITEM-001\"}],\"addons\":[{}]," +
-                "\"sets\":[{\"frameCode\":\"FRM-001\",\"detail\":{}}],\"timing\":\"earlier\",\"status\":\"" +
-                "waiting\",\"canceledAt\":\"2017-09-01T12:00:00+09:00\",\"deliveredAt\":\"2017-09-01T12:00:00+09:00\"" +
-                "},\"title\":\"Title\",\"status\":\"unfinished\"},{\"id\":2,\"orderDetail\":{\"id\":1,\"menuCode\":" +
-                "\"MENU-002\",\"quantity\":1,\"options\":[{\"typeCode\":\"TYPE-002\",\"itemCode\":\"ITEM-002\"}]," +
-                "\"addons\":[{}],\"sets\":[{\"frameCode\":\"FRM-001\",\"detail\":{}}],\"timing\":\"earlier\",\"status\":" +
-                "\"waiting\",\"canceledAt\":\"2017-09-01T12:00:00+09:00\",\"deliveredAt\":\"2017-09-01T12:00:00+09:00\"" +
-                "},\"title\":\"Title\",\"status\":\"unfinished\"}]}";
+        String json = "{\"id\":1,\"table\":{\"id\":1,\"visitorId\":1,\"name\":\"TBL-001\",\"status\":\"" + "assignable\"},\"priority\":\"high\",\"timestamp\":\"2017-09-01T12:00:00+09:00\",\"elapsed\":3," + "\"details\":[{\"id\":1,\"orderDetail\":{\"id\":1,\"menuCode\":\"MENU-001\",\"quantity\":1," + "\"options\":[{\"typeCode\":\"TYPE-001\",\"itemCode\":\"ITEM-001\"}],\"addons\":[{}]," + "\"sets\":[{\"frameCode\":\"FRM-001\",\"detail\":{}}],\"timing\":\"earlier\",\"status\":\"" + "waiting\",\"canceledAt\":\"2017-09-01T12:00:00+09:00\",\"deliveredAt\":\"2017-09-01T12:00:00+09:00\"" + "},\"title\":\"Title\",\"status\":\"unfinished\"},{\"id\":2,\"orderDetail\":{\"id\":1,\"menuCode\":" + "\"MENU-002\",\"quantity\":1,\"options\":[{\"typeCode\":\"TYPE-002\",\"itemCode\":\"ITEM-002\"}]," + "\"addons\":[{}],\"sets\":[{\"frameCode\":\"FRM-001\",\"detail\":{}}],\"timing\":\"earlier\",\"status\":" + "\"waiting\",\"canceledAt\":\"2017-09-01T12:00:00+09:00\",\"deliveredAt\":\"2017-09-01T12:00:00+09:00\"" + "},\"title\":\"Title\",\"status\":\"unfinished\"}]}";
         return getObject(json);
     }
 
@@ -129,6 +121,5 @@ public class TaskUti {
         return 0;
     }
 
-    private final static String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZ";
-    private final static String STT_UNFINISH = "unfinish";
+
 }

@@ -130,21 +130,16 @@ public class UpdateIPActivity extends AppCompatActivity {
      *  check ip
      *
      * **/
-    private boolean isIP( String input ) {
-
-        if ( input.contains(".") && input.length() > 1 ) {
-
-            String ip = input.replace(".", "" ).
-                    trim().replace( "https://","" ).
-                    trim().replace( "http://","" ).
-                    trim().replace( ":","" ).
-                    trim();
-            Log.v( "MyActivity", ip );
-            return TextUtils.isDigitsOnly( ip );
-
-        }
-        else {
+    private boolean isIP(String input) {
+        if (!input.contains(".") || input.length() <= 1) {
             return false;
         }
+        String ip = input.replace(".", "").
+                trim().replace("https://", "").
+                trim().replace("http://", "").
+                trim().replace(":", "").
+                trim();
+        Log.v("MyActivity", ip);
+        return TextUtils.isDigitsOnly(ip);
     }
 }
