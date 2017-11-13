@@ -23,15 +23,14 @@ public class NotificationBroadcast extends BroadcastReceiver {
     @Override
     public void onReceive( final Context context, Intent intent) {
 
-        Intent notificationIntent = new Intent(context, getClass() );
+        Intent notificationIntent = new Intent(context, MainActivity.class );
 
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
-        stackBuilder.addParentStack( NotificationActivity.class );
+        stackBuilder.addParentStack( MainActivity.class );
         stackBuilder.addNextIntent(notificationIntent);
 
         PendingIntent pendingIntent = stackBuilder
                 .getPendingIntent( 0, PendingIntent.FLAG_UPDATE_CURRENT );
-
 
         // content notification
         NotificationCompat.Builder builder = new NotificationCompat.Builder( context );
