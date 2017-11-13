@@ -1,33 +1,41 @@
 package com.renosys.handy;
 
+import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.webkit.JavascriptInterface;
 import android.webkit.JsResult;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-import android.webkit.WebViewClient;
-import android.app.Activity;
-import android.view.Window;
-import android.view.WindowManager;
+
+import com.renosys.handy.alarm.AlarmBroadcastReceiver;
+import com.renosys.handy.alarm.AlarmUtil;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.Calendar;
+
 import static java.util.TimeZone.getDefault;
 
 
 public class MainActivity extends AppCompatActivity {
+    private static final String TAG = MainActivity.class.getSimpleName();
 
     // UI references.
     private EditText mIPView;
@@ -35,6 +43,8 @@ public class MainActivity extends AppCompatActivity {
 
     // the time repeat alarm for everyday
     private static long TIME_REPEAT = 24 * 60 * 60 * 1000;
+
+    private boolean isNotify = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,8 +63,14 @@ public class MainActivity extends AppCompatActivity {
 
         mWebView = (WebView) findViewById(R.id.webView);
 
-        SharedPreferences prefs = getSharedPreferences(getString(R.string.my_ip_address_string), MODE_PRIVATE);
-        String ipAddress = prefs.getString(getString(R.string.my_ip_address_string), null);
+        String ipAddress = AppSetting.getInstance(this).getIpAddress();
+        try {
+            isNotify = getIntent().getBooleanExtra(AlarmBroadcastReceiver.NOTIFICATION_EXTRA, false);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Log.d(TAG, "onCreate: isNotify: " + isNotify);
+        Log.d(TAG, "onCreate: isExistAlarmTask: " + AlarmUtil.isExistAlarm(this));
 
         if (ipAddress != null) {
             mIPView.setText(ipAddress);
@@ -96,7 +112,8 @@ public class MainActivity extends AppCompatActivity {
 
         Intent reload = new Intent(this, MainActivity.class);
         reload.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-        alarmIntent = PendingIntent.getActivity( this, 0, reload, PendingIntent.FLAG_UPDATE_CURRENT );
+        alarmIntent = PendingIntent.getActivity(this, 0,
+                reload, PendingIntent.FLAG_UPDATE_CURRENT );
 
         // setting calendar
         Calendar calendar = Calendar.getInstance();
@@ -137,7 +154,8 @@ public class MainActivity extends AppCompatActivity {
 
         Intent notificationIntent = new Intent("android.media.action.DISPLAY_NOTIFICATION");
         notificationIntent.addCategory("android.intent.category.DEFAULT");
-        alarmIntent = PendingIntent.getBroadcast(this, 0, notificationIntent, 0);
+        alarmIntent = PendingIntent.getBroadcast(this,
+                0, notificationIntent, 0);
 
         // Set alarm to start at 9.59 AM
         Calendar calendar = Calendar.getInstance();
@@ -188,11 +206,17 @@ public class MainActivity extends AppCompatActivity {
         public void performClick(String _id) {
             startActivity(new Intent(MainActivity.this, UpdateIPActivity.class));
         }
+
+        @JavascriptInterface
+        public void setAllData(String data) {
+            Log.d(TAG, "WebAppInterface: setAllData: " + data);
+            setData(data);
+        }
     }
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+//        super.onBackPressed();
     }
 
 
@@ -236,9 +260,7 @@ public class MainActivity extends AppCompatActivity {
         mWebView.setWebViewClient(new WebViewClient() {
             public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
                 Toast.makeText(activity, description, Toast.LENGTH_SHORT).show();
-                SharedPreferences.Editor editor = getSharedPreferences(getString(R.string.my_ip_address_string), MODE_PRIVATE).edit();
-                editor.remove(getString(R.string.my_ip_address_string));
-                editor.apply();
+                AppSetting.getInstance(MainActivity.this).setIpAddress(null);
                 mWebView.setVisibility(View.GONE);
 
             }
@@ -251,7 +273,11 @@ public class MainActivity extends AppCompatActivity {
 
         });
 
-        mWebView.loadUrl(ipAddress);
+        if (isNotify) {
+            mWebView.loadUrl(ipAddress + "?goToTask=1");
+        } else {
+            mWebView.loadUrl(ipAddress);
+        }
     }
 
 
@@ -284,9 +310,7 @@ public class MainActivity extends AppCompatActivity {
 
         } else {
 
-            SharedPreferences.Editor editor = getSharedPreferences(getString(R.string.my_ip_address_string), MODE_PRIVATE).edit();
-            editor.putString(getString(R.string.my_ip_address_string), ipAddress);
-            editor.apply();
+            AppSetting.getInstance(this).setIpAddress(ipAddress);
 
             mWebView.setVisibility(View.VISIBLE);
             loadingWebview(ipAddress);
@@ -316,5 +340,28 @@ public class MainActivity extends AppCompatActivity {
             return false;
         }
     }
-}
 
+    private void setData(String data) {
+        Log.d(TAG, "setData: " + data);
+
+        int interval = 0;
+        boolean isChangeInterval = false;
+        try {
+            JSONObject jsonObject = new JSONObject(data);
+            String intervalStr = jsonObject.getString("pollingInterval");
+            interval = Integer.valueOf(intervalStr);
+            if (AppSetting.getInstance(this).getInterval() == 0) {
+                AppSetting.getInstance(this).setInterval(interval);
+            } else if (AppSetting.getInstance(this).getInterval() != interval) {
+                isChangeInterval = true;
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+//        if (!AlarmUtil.isExistAlarm(this) || isChangeInterval) {
+//            AlarmUtil.startAlarm(this, interval*1000);
+//        }
+        AlarmUtil.startAlarm(this, interval*1000);
+    }
+}

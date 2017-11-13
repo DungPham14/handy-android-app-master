@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.renosys.handy">
-
     <uses-permission android:name="android.permission.INTERNET"/>
-    <!--<uses-permission android:name="android.permission.WRITE_SETTINGS" />-->
-    <!--<uses-permission android:name="android.permission.CHANGE_CONFIGURATION" />-->
-    <!--<uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>-->
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <uses-permission android:name="android.permission.VIBRATE"/>
 
@@ -24,19 +20,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity android:name=".UpdateIPActivity"></activity>
 
-        <activity android:name=".NotificationActivity"/>
+        <receiver android:name=".alarm.AlarmBroadcastReceiver" />
+        <receiver android:name="com.renosys.handy.NotificationBroadcast" >
+            <intent-filter>
+                <action android:name="android.media.action.DISPLAY_NOTIFICATION" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
 
-
-        <!--<receiver android:name="com.renosys.handy.NotificationBroadcasticationBroadcast" >-->
-            <!--<intent-filter>-->
-                <!--<action android:name="android.media.action.DISPLAY_NOTIFICATION" />-->
-                <!--<category android:name="android.intent.category.DEFAULT" />-->
-            <!--</intent-filter>-->
-
-        <!--</receiver>-->
+        </receiver>
 
     </application>
 
